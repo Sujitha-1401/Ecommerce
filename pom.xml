@@ -9,7 +9,7 @@
 		<version>3.3.5</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.ecom</groupId>
+	<groupId>com.ecom</groupId> 
 	<artifactId>Ecomerce</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Shopping_Cart</name>
