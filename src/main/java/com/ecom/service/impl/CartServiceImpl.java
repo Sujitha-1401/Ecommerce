@@ -79,7 +79,16 @@ public class CartServiceImpl implements CartService {
 	@Override
 	public void updateQuantity(String sy, Integer cid) {
 
-		Cart cart = cartRepository.findById(cid).get();
+		Cart cart = cartRepository.findById(cid).orElse(null);
+		if (cart == null) {
+			return;
+		}
+
+		if (sy.equalsIgnoreCase("rem")) {
+			cartRepository.delete(cart);
+			return;
+		}
+
 		int updateQuantity;
 
 		if (sy.equalsIgnoreCase("de")) {

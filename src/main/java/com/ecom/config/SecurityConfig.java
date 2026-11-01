@@ -52,7 +52,8 @@ public class SecurityConfig {
 //						.defaultSuccessUrl("/")
 						.failureHandler(authenticationFailureHandler)
 						.successHandler(authenticationSuccessHandler))
-				.logout(logout->logout.permitAll());
+				.logout(logout->logout.permitAll())
+				.headers(headers -> headers.frameOptions(frame -> frame.disable()));
 		
 		return http.build();
 	}

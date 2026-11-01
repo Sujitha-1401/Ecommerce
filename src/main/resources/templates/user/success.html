@@ -2,24 +2,48 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
 	th:replace="~{base::layout(~{::section})}">
 <head>
-<meta charset="ISO-8859-1">
-<title>Insert title here</title>
+<meta charset="UTF-8">
+<title>Order Confirmed - Ecom Store</title>
 </head>
 <body>
 	<section>
-		<div class="container mt-5 p-5">
-			<div class="row">
-				<div class="col-md-6 offset-md-3 text-center">
-					<i class="fa-solid fa-circle-check fa-5x text-success"></i>
-					<p class="fs-3">Product Ordered Successfully</p>
-					<p class="fs-4">Product will be delivered with in 7 days</p>
-					<div class="text-center">
-						<a href="/" class="btn btn-primary">Home</a> <a href="/user/user-orders"
-							class="btn btn-primary">Your Order</a>
+		<div class="container my-5 py-4">
+			<div class="row justify-content-center">
+				<div class="col-md-7 col-lg-6">
+					<div class="cart-card p-5 text-center">
+						<div class="mb-4">
+							<span class="d-inline-flex align-items-center justify-content-center bg-success-subtle text-success rounded-circle"
+								style="width: 100px; height: 100px;">
+								<i class="fa-solid fa-circle-check fa-4x text-success"></i>
+							</span>
+						</div>
+
+						<h2 class="fw-bold mb-2">Order Placed Successfully!</h2>
+						<p class="text-muted mb-4">
+							Thank you for shopping with us! Your order has been placed and is being processed for dispatch.
+						</p>
+
+						<div class="p-3 rounded-3 mb-4 text-start" style="background: #f8fafc; border: 1px dashed #cbd5e1;">
+							<div class="d-flex align-items-center gap-3">
+								<i class="fa-solid fa-truck-fast text-primary fs-3"></i>
+								<div>
+									<strong class="d-block text-dark">Estimated Delivery: Within 3-5 Business Days</strong>
+									<span class="text-muted small">You will receive an email tracking notification as soon as it ships.</span>
+								</div>
+							</div>
+						</div>
+
+						<div class="d-flex justify-content-center gap-3 flex-wrap">
+							<a href="/user/user-orders" class="btn btn-modern-primary px-4 py-2">
+								<i class="fa-solid fa-box-open me-2"></i> Track Your Order
+							</a>
+							<a href="/" class="btn btn-modern-secondary px-4 py-2">
+								<i class="fa-solid fa-house me-2"></i> Back to Home
+							</a>
+						</div>
 					</div>
 				</div>
 			</div>
-
 		</div>
 	</section>
 </body>

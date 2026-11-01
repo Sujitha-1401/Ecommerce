@@ -2,125 +2,177 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
 	th:replace="~{base::layout(~{::section})}">
 <head>
-<meta charset="ISO-8859-1">
-<title>Insert title here</title>
+<meta charset="UTF-8">
+<title>Checkout - Ecom Store</title>
 </head>
 <body>
 	<section>
+		<div class="container my-5">
+			<!-- Breadcrumb -->
+			<nav aria-label="breadcrumb" class="mb-4">
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item"><a href="/" class="text-decoration-none">Home</a></li>
+					<li class="breadcrumb-item"><a href="/user/cart" class="text-decoration-none">Cart</a></li>
+					<li class="breadcrumb-item active" aria-current="page">Checkout</li>
+				</ol>
+			</nav>
 
-		<div class="container mt-5 p-5">
-			<form action="/user/save-order" method="post" id="orders" novalidate>
-				<div class="row">
+			<div class="mb-4">
+				<h2 class="fw-bold mb-1">
+					<i class="fa-solid fa-lock text-success me-2"></i> Secure Checkout
+				</h2>
+				<p class="text-muted small mb-0">Please fill your shipping address and select a payment method</p>
+			</div>
 
-					<div class="col-md-6">
+			<form action="/user/save-order" method="post" id="orders">
+				<div class="row g-4">
+					<!-- Left: Shipping Address Form -->
+					<div class="col-lg-7">
+						<div class="checkout-card p-4">
+							<h5 class="fw-bold mb-3 d-flex align-items-center gap-2">
+								<i class="fa-solid fa-location-dot text-primary"></i> 1. Shipping & Billing Details
+							</h5>
+							<hr class="mb-4">
 
-
-						<div class="mb-3 row">
-							<p class="text-center fs-4">Billing Address</p>
-							<hr>
-							<div class="col p-1">
-								<label>First Name</label> <input type="text" name="firstName" required
-									class="form-control mt-1">
-							</div>
-							<div class="col p-1">
-								<label>Last Name</label> <input type="text" name="lastName" required
-									class="form-control mt-1">
-							</div>
-						</div>
-
-						<div class="mb-3 row">
-							<div class="col p-1">
-								<label>Email</label> <input type="email" name="email" required
-									class="form-control col">
-							</div>
-							<div class="col p-1">
-								<label>Mobile Number</label> <input type="text" name="mobileNo" required
-									class="form-control col ms-2">
-							</div>
-						</div>
-
-						<div class="mb-3 row">
-							<div class="col p-1">
-								<label>Address</label> <input type="text" name="address" required
-									class="form-control col">
-							</div>
-							<div class="col p-1">
-								<label>City</label> <input type="text" name="city" required
-									class="form-control col ms-2">
-							</div>
-						</div>
-						<div class="mb-3 row">
-							<div class="col p-1">
-								<label>State</label> <input type="text" name="state" required
-									class="form-control col">
-							</div>
-							<div class="col p-1">
-								<label>Pincode</label> <input type="number" name="pincode" required
-									class="form-control col ms-2">
-							</div>
-						</div>
-						<!-- </form> -->
-
-					</div>
-					<div class="col-md-6">
-						<p class="text-center fs-4">Payment Type</p>
-						<hr>
-						<div class="card">
-							<div class="card-body">
-								<table class="table table-borderless">
-									<tbody>
-										<tr>
-											<td>Total price</td>
-											<td>:</td>
-											<td>&#8377; [[${orderPrice}]]</td>
-										</tr>
-										<tr>
-											<td>Delivery Fee</td>
-											<td>:</td>
-											<td>&#8377; 250</td>
-										</tr>
-
-										<tr>
-											<td>Tax</td>
-											<td>:</td>
-											<td>&#8377; 100</td>
-										</tr>
-
-										<tr class="border-top">
-											<td>Total Price</td>
-											<td>:</td>
-											<td>&#8377; [[${totalOrderPrice}]]</td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
-						</div>
-
-						<div class="card shadow p-3 mb-5 mt-2 bg-body-tertiary rounded">
-
-							<div class="card-body">
-								<!-- <form action="/login" method="post"> -->
-								<div class="mb-3">
-									<label class="form-label">Select Payment Type</label> <select required
-										name="paymentType" class="form-control">
-										<option value="">--select--</option>
-										<option value="COD">Cash On Delivery</option>
-										<option value="ONLINE">Online Payment</option>
-									</select>
-
+							<div class="row g-3">
+								<div class="col-md-6">
+									<label class="form-label fw-bold small text-secondary">First Name *</label>
+									<input type="text" name="firstName" required class="form-control py-2"
+										th:value="${user != null and user.name != null ? user.name.split(' ')[0] : ''}"
+										placeholder="First name">
+								</div>
+								<div class="col-md-6">
+									<label class="form-label fw-bold small text-secondary">Last Name *</label>
+									<input type="text" name="lastName" required class="form-control py-2"
+										th:value="${user != null and user.name != null and user.name.contains(' ') ? user.name.substring(user.name.indexOf(' ') + 1) : 'Customer'}"
+										placeholder="Last name">
 								</div>
 
-								<button class="btn bg-primary text-white col-md-12">Place
-									Order</button>
+								<div class="col-md-6">
+									<label class="form-label fw-bold small text-secondary">Email Address *</label>
+									<input type="email" name="email" required class="form-control py-2"
+										th:value="${user != null ? user.email : ''}"
+										placeholder="you@example.com">
+								</div>
+								<div class="col-md-6">
+									<label class="form-label fw-bold small text-secondary">Mobile Number *</label>
+									<input type="text" name="mobileNo" required class="form-control py-2"
+										th:value="${user != null ? user.mobileNumber : ''}"
+										placeholder="10-digit mobile">
+								</div>
 
+								<div class="col-12">
+									<label class="form-label fw-bold small text-secondary">Street Address *</label>
+									<input type="text" name="address" required class="form-control py-2"
+										th:value="${user != null ? user.address : ''}"
+										placeholder="Flat, building, street, locality">
+								</div>
+
+								<div class="col-md-5">
+									<label class="form-label fw-bold small text-secondary">City *</label>
+									<input type="text" name="city" required class="form-control py-2"
+										th:value="${user != null ? user.city : ''}"
+										placeholder="City">
+								</div>
+								<div class="col-md-4">
+									<label class="form-label fw-bold small text-secondary">State *</label>
+									<input type="text" name="state" required class="form-control py-2"
+										th:value="${user != null ? user.state : ''}"
+										placeholder="State">
+								</div>
+								<div class="col-md-3">
+									<label class="form-label fw-bold small text-secondary">Pincode *</label>
+									<input type="text" name="pincode" required class="form-control py-2"
+										th:value="${user != null ? user.pincode : ''}"
+										placeholder="Postal code">
+								</div>
 							</div>
 						</div>
 					</div>
 
+					<!-- Right: Order Summary & Payment Type -->
+					<div class="col-lg-5">
+						<div class="summary-card mb-4">
+							<h5 class="fw-bold mb-3 d-flex align-items-center gap-2">
+								<i class="fa-solid fa-receipt text-primary"></i> 2. Order Summary
+							</h5>
+							<hr class="mb-3">
+
+							<!-- Cart items summary -->
+							<div class="mb-3" style="max-height: 200px; overflow-y: auto;">
+								<div th:each="cart:${carts}" class="d-flex align-items-center justify-content-between py-2 border-bottom">
+									<div class="d-flex align-items-center gap-2">
+										<div class="border rounded p-1 bg-light" style="width: 45px; height: 45px;">
+											<img th:src="@{${cart.product.image != null and cart.product.image.startsWith('/') ? cart.product.image : (cart.product.image != null and (cart.product.image.startsWith('http://') or cart.product.image.startsWith('https://')) ? cart.product.image : '/img/product_img/' + (cart.product.image != null ? cart.product.image : 'default.jpg'))}}"
+												style="max-width: 100%; max-height: 100%; object-fit: contain;"
+												onerror="this.onerror=null;this.src='/img/default.jpg';">
+										</div>
+										<div>
+											<span class="d-block small fw-bold text-truncate" style="max-width: 180px;">[[${cart.product.title}]]</span>
+											<span class="text-muted" style="font-size: 0.75rem;">Qty: [[${cart.quantity}]] &times; &#8377;[[${#numbers.formatDecimal(cart.product.discountPrice, 0, 'COMMA', 2, 'POINT')}]]</span>
+										</div>
+									</div>
+									<span class="fw-bold small">&#8377;[[${#numbers.formatDecimal(cart.totalPrice, 0, 'COMMA', 2, 'POINT')}]]</span>
+								</div>
+							</div>
+
+							<div class="summary-row">
+								<span>Items Total</span>
+								<span>&#8377;[[${#numbers.formatDecimal(orderPrice, 0, 'COMMA', 2, 'POINT')}]]</span>
+							</div>
+							<div class="summary-row">
+								<span>Delivery & Handling</span>
+								<span class="text-success fw-bold">&#8377;250.00</span>
+							</div>
+							<div class="summary-row">
+								<span>Applicable Tax (GST)</span>
+								<span>&#8377;100.00</span>
+							</div>
+							<div class="summary-total">
+								<span>Total Payable</span>
+								<span class="text-primary">&#8377;[[${#numbers.formatDecimal(totalOrderPrice, 0, 'COMMA', 2, 'POINT')}]]</span>
+							</div>
+						</div>
+
+						<!-- Payment Selection Card -->
+						<div class="summary-card">
+							<h5 class="fw-bold mb-3 d-flex align-items-center gap-2">
+								<i class="fa-solid fa-credit-card text-primary"></i> 3. Payment Method
+							</h5>
+							<hr class="mb-3">
+
+							<div class="mb-3">
+								<div class="form-check p-3 border rounded-3 mb-2" style="background: #f8fafc;">
+									<input class="form-check-input ms-0 me-3" type="radio" name="paymentType" id="paymentCOD" value="COD" checked>
+									<label class="form-check-label fw-bold d-flex justify-content-between align-items-center w-100" for="paymentCOD">
+										<span><i class="fa-solid fa-hand-holding-dollar text-success me-2"></i> Cash On Delivery (COD)</span>
+										<span class="badge bg-success-subtle text-success border border-success-subtle">Recommended</span>
+									</label>
+									<small class="text-muted d-block ms-4 ps-1 mt-1">Pay comfortably in cash or UPI at your doorstep upon arrival.</small>
+								</div>
+
+								<div class="form-check p-3 border rounded-3" style="background: #f8fafc;">
+									<input class="form-check-input ms-0 me-3" type="radio" name="paymentType" id="paymentOnline" value="ONLINE">
+									<label class="form-check-label fw-bold d-flex justify-content-between align-items-center w-100" for="paymentOnline">
+										<span><i class="fa-solid fa-credit-card text-primary me-2"></i> Online Payment / UPI / Cards</span>
+										<span class="badge bg-primary-subtle text-primary border border-primary-subtle">Fast & Instant</span>
+									</label>
+									<small class="text-muted d-block ms-4 ps-1 mt-1">Pay securely via Credit/Debit Cards, NetBanking, or UPI apps.</small>
+								</div>
+							</div>
+
+							<button type="submit" class="btn btn-modern-buy w-100 py-3 fs-6 mt-3">
+								<i class="fa-solid fa-circle-check me-2"></i> Place Order Now
+							</button>
+
+							<p class="text-muted text-center small mt-3 mb-0">
+								By placing order, you agree to Ecom Store's Terms & Conditions.
+							</p>
+						</div>
+					</div>
 				</div>
 			</form>
 		</div>
-
 	</section>
 </body>
 </html>

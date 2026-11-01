@@ -2,121 +2,109 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
 	th:replace="~{base::layout(~{::section})}">
 <head>
-<meta charset="ISO-8859-1">
-<title>Insert title here</title>
+<meta charset="UTF-8">
+<title>Create Account - Ecom Store</title>
 </head>
 <body>
 	<section>
-		<div class="container mt-5 p-5">
-			<div class="row">
-				<div class="col-md-5 p-5">
-					<img alt="" src="img/ecom.png" width="100%" height="400px">
+		<div class="container my-5">
+			<div class="row align-items-center justify-content-center">
+				<div class="col-md-5 d-none d-lg-block text-center p-4">
+					<img alt="Register illustration" src="/img/ecom.png" class="img-fluid" style="max-height: 420px; object-fit: contain;"
+						onerror="this.onerror=null;this.src='/img/default.jpg';">
+					<h4 class="fw-bold mt-4">Join Ecom Store</h4>
+					<p class="text-muted">Create an account to enjoy personalized recommendations, exclusive discounts, and speedy checkout.</p>
 				</div>
-				<div class="col-md-7 p-2">
-					<div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
-						<div class="card-header text-center">
-							<p class="fs-4 text-center">Register</p>
-							<th:block th:if="${session.succMsg}">
-								<p class="text-success fw-bold">[[${session.succMsg}]]</p>
-								<th:block th:text="${@commnServiceImpl.removeSessionMessage()}"></th:block>
-							</th:block>
 
-							<th:block th:if="${session.errorMsg}">
-								<p class="text-danger fw-bold">[[${session.errorMsg}]]</p>
-								<th:block th:text="${@commnServiceImpl.removeSessionMessage()}"></th:block>
-							</th:block>
-						</div>
-						<div class="card-body">
-							<form action="/saveUser" enctype="multipart/form-data" id="userRegister" novalidate
-								method="post">
-								<div class="row">
-									<div class="col">
-										<label class="form-label">Full Name</label> <input required
-											class="form-control" name="name" type="text">
-									</div>
-
-									<div class="col">
-										<label class="form-label">Mobile Number</label> <input
-											required class="form-control" name="mobileNumber"
-											type="number">
-									</div>
-
-								</div>
-
-								<div class="mb-3">
-									<label class="form-label">Email</label> <input required
-										class="form-control" name="email" type="email">
-								</div>
-
-
-								<div class="row">
-									<div class="col">
-										<label class="form-label">Address</label> <input required
-											class="form-control" name="address" type="text">
-									</div>
-
-									<div class="col">
-										<label class="form-label">City</label> <input required
-											class="form-control" name="city" type="text">
-									</div>
-
-								</div>
-
-								<div class="row">
-									<div class="col">
-										<label class="form-label">State</label> <input required
-											class="form-control" name="state" type="text">
-									</div>
-
-									<div class="col">
-										<label class="form-label">Pincode</label> <input required
-											class="form-control" name="pincode" type="number">
-									</div>
-
-								</div>
-
-
-								<div class="row">
-									<div class="col">
-										<label class="form-label">Password</label> <input required
-											class="form-control" name="password" type="password" id="pass">
-									</div>
-
-									<div class="col">
-										<label class="form-label">Confirm Password</label> <input
-											required class="form-control" name="confirmpassword"
-											type="password">
-									</div>
-
-								</div>
-
-
-
-								<div class="mb-3">
-									<label class="form-label">Profile Image</label> <input
-										class="form-control" name="img" type="file">
-								</div>
-
-
-
-
-
-
-								<button type="submit"
-									class="btn bg-primary text-white col-md-12">Register</button>
-							</form>
+				<div class="col-lg-7 col-md-10">
+					<div class="cart-card p-4 p-md-5">
+						<div class="text-center mb-4">
+							<h3 class="fw-bold mb-1">Create an Account</h3>
+							<p class="text-muted small">Fill in the details below to complete your registration</p>
 						</div>
 
-						<div class="card-footer text-center">
+						<th:block th:if="${session.succMsg}">
+							<div class="alert alert-success custom-alert text-center py-2" role="alert">
+								<i class="fa-solid fa-circle-check me-1"></i> [[${session.succMsg}]]
+								<a href="/signin" class="btn btn-sm btn-outline-success ms-2 fw-bold">Sign In Now</a>
+							</div>
+							<th:block th:text="${@commnServiceImpl.removeSessionMessage()}"></th:block>
+						</th:block>
 
-							have an account ? <a href="/signin" class="text-decoration-none">Login
-							</a>
+						<th:block th:if="${session.errorMsg}">
+							<div class="alert alert-danger custom-alert text-center py-2" role="alert">
+								<i class="fa-solid fa-circle-exclamation me-1"></i> [[${session.errorMsg}]]
+							</div>
+							<th:block th:text="${@commnServiceImpl.removeSessionMessage()}"></th:block>
+						</th:block>
+
+						<form action="/saveUser" enctype="multipart/form-data" id="userRegister" method="post">
+							<div class="row g-3 mb-3">
+								<div class="col-md-6">
+									<label class="form-label fw-bold small text-secondary">Full Name *</label>
+									<input required class="form-control" name="name" type="text" placeholder="John Doe">
+								</div>
+								<div class="col-md-6">
+									<label class="form-label fw-bold small text-secondary">Mobile Number *</label>
+									<input required class="form-control" name="mobileNumber" type="text" placeholder="10-digit mobile">
+								</div>
+							</div>
+
+							<div class="mb-3">
+								<label class="form-label fw-bold small text-secondary">Email Address *</label>
+								<input required class="form-control" name="email" type="email" placeholder="name@example.com">
+							</div>
+
+							<div class="row g-3 mb-3">
+								<div class="col-md-6">
+									<label class="form-label fw-bold small text-secondary">Address *</label>
+									<input required class="form-control" name="address" type="text" placeholder="Flat, street address">
+								</div>
+								<div class="col-md-6">
+									<label class="form-label fw-bold small text-secondary">City *</label>
+									<input required class="form-control" name="city" type="text" placeholder="City">
+								</div>
+							</div>
+
+							<div class="row g-3 mb-3">
+								<div class="col-md-6">
+									<label class="form-label fw-bold small text-secondary">State *</label>
+									<input required class="form-control" name="state" type="text" placeholder="State">
+								</div>
+								<div class="col-md-6">
+									<label class="form-label fw-bold small text-secondary">Pincode *</label>
+									<input required class="form-control" name="pincode" type="text" placeholder="Postal code">
+								</div>
+							</div>
+
+							<div class="row g-3 mb-3">
+								<div class="col-md-6">
+									<label class="form-label fw-bold small text-secondary">Password *</label>
+									<input required class="form-control" name="password" type="password" id="pass" placeholder="••••••••">
+								</div>
+								<div class="col-md-6">
+									<label class="form-label fw-bold small text-secondary">Confirm Password *</label>
+									<input required class="form-control" name="confirmpassword" type="password" placeholder="••••••••">
+								</div>
+							</div>
+
+							<div class="mb-4">
+								<label class="form-label fw-bold small text-secondary">Profile Image (Optional)</label>
+								<input class="form-control" name="img" type="file" accept="image/*">
+							</div>
+
+							<button type="submit" class="btn btn-modern-primary w-100 py-3 fs-6">
+								<i class="fa-solid fa-user-plus me-2"></i> Register Account
+							</button>
+						</form>
+
+						<div class="text-center mt-4 pt-3 border-top small text-secondary">
+							Already have an account? <a href="/signin" class="text-primary fw-bold text-decoration-none">Sign In</a>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-
 	</section>
 </body>
 </html>

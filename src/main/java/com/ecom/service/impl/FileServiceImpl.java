@@ -1,57 +1,50 @@
 package com.ecom.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import java.io.File;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.amazonaws.services.s3.model.PutObjectResult;
 import com.ecom.service.FileService;
 
 @Service
 public class FileServiceImpl implements FileService {
 
-	@Autowired
-	public AmazonS3 amazonS3;
-
-	@Value("${aws.s3.bucket.category}")
-	private String categoryBucket;
-
-	@Value("${aws.s3.bucket.product}")
-	private String productBucket;
-
-	@Value("${aws.s3.bucket.profile}")
-	private String profileBucket;
-
 	@Override
 	public boolean saveFile(MultipartFile file, Integer bucketType) {
-		String bucketName = null;
-		try {
-
-			if (bucketType == 1) {
-				bucketName = categoryBucket;
-			} else if (bucketType == 2) {
-				bucketName = productBucket;
-			} else
-				bucketName = profileBucket;
-			ObjectMetadata objectMetadata = new ObjectMetadata();
-			objectMetadata.setContentType(file.getContentType());
-			objectMetadata.setContentLength(file.getSize());
-			PutObjectRequest request = new PutObjectRequest(bucketName, file.getOriginalFilename(),
-					file.getInputStream(), objectMetadata);
-			PutObjectResult object = amazonS3.putObject(request);
-			if (!ObjectUtils.isEmpty(object)) {
-				return true;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		if (file == null || file.isEmpty()) {
+			return true;
 		}
 
-		return false;
+		String subFolder = (bucketType == 1) ? "category_img" : (bucketType == 2) ? "product_img" : "profile_img";
+
+		try {
+			String filename = file.getOriginalFilename();
+			String[] targetDirs = {
+				"src/main/resources/static/img/" + subFolder,
+				"target/classes/static/img/" + subFolder
+			};
+
+			byte[] bytes = file.getBytes();
+			for (String dirPath : targetDirs) {
+				File dir = new File(dirPath);
+				if (!dir.exists()) {
+					dir.mkdirs();
+				}
+				Path destination = Paths.get(dir.getAbsolutePath(), filename);
+				Files.write(destination, bytes);
+			}
+
+			return true;
+		} catch (Exception e) {
+			System.err.println("Notice: Failed to save file locally: " + e.getMessage());
+			return false;
+		}
 	}
 
 }

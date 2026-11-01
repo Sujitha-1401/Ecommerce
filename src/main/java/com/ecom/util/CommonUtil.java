@@ -24,62 +24,73 @@ public class CommonUtil {
 	@Autowired
 	private JavaMailSender mailSender;
 
-	@Value("${aws.s3.bucket.category}")
+	@Value("${aws.s3.bucket.category:ecommerce-category}")
 	private String categoryBucket;
 
-	@Value("${aws.s3.bucket.product}")
+	@Value("${aws.s3.bucket.product:ecommerce-product}")
 	private String productBucket;
 
-	@Value("${aws.s3.bucket.profile}")
+	@Value("${aws.s3.bucket.profile:ecommerce-profile}")
 	private String profileBucket;
 
 //	Send mail on Succesfull Registration
 
 	public void sendMailOnSuccessfullRegistration(UserDtls user)
 			throws UnsupportedEncodingException, MessagingException {
-
-		MimeMessage mimeMessage = mailSender.createMimeMessage();
-		MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
-		helper.setFrom("yourmail@gmail.com", "Ecommerce Site");
-		helper.setTo(user.getEmail());
-		String message = "<p>Hello,</p>" + user.getName()
-				+ "<p> <b>You have successfully Registered to Ecommerce Site.</b></p>" + "<p><b>UserName : </b></p>"
-				+ user.getName() + "<p><b>Password : </b></p>" + user.getOriginalPassword();
-		helper.setSubject("Ecommerce Site Registration ");
-		helper.setText(message, true);
-		mailSender.send(mimeMessage);
+		try {
+			MimeMessage mimeMessage = mailSender.createMimeMessage();
+			MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
+			helper.setFrom("yourmail@gmail.com", "Ecommerce Site");
+			helper.setTo(user.getEmail());
+			String message = "<p>Hello,</p>" + user.getName()
+					+ "<p> <b>You have successfully Registered to Ecommerce Site.</b></p>" + "<p><b>UserName : </b></p>"
+					+ user.getName() + "<p><b>Password : </b></p>" + user.getOriginalPassword();
+			helper.setSubject("Ecommerce Site Registration ");
+			helper.setText(message, true);
+			mailSender.send(mimeMessage);
+		} catch (Exception e) {
+			System.err.println("Notice: Email notification could not be sent (SMTP not configured): " + e.getMessage());
+		}
 	}
 //Send mail on Password Update
 
 	public void sendMailOnPasswordUpdate(UserDtls user, String password)
 			throws UnsupportedEncodingException, MessagingException {
-		MimeMessage mimeMessage = mailSender.createMimeMessage();
-		MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
-		helper.setFrom("yourmail@gmail.com", "Ecommerce Site");
-		helper.setTo(user.getEmail());
-		String message = "<p>Hello,</p>" + user.getName()
-				+ "<p> <b>You have successfully Updated Your  Ecommerce Site password .</b></p>"
-				+ "<p><b>UserName : </b></p>" + user.getName() + "<p><b>Updated Password : </b></p>" + password;
-		helper.setSubject("Ecommerce Site Password Updated ");
-		helper.setText(message, true);
-		mailSender.send(mimeMessage);
+		try {
+			MimeMessage mimeMessage = mailSender.createMimeMessage();
+			MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
+			helper.setFrom("yourmail@gmail.com", "Ecommerce Site");
+			helper.setTo(user.getEmail());
+			String message = "<p>Hello,</p>" + user.getName()
+					+ "<p> <b>You have successfully Updated Your  Ecommerce Site password .</b></p>"
+					+ "<p><b>UserName : </b></p>" + user.getName() + "<p><b>Updated Password : </b></p>" + password;
+			helper.setSubject("Ecommerce Site Password Updated ");
+			helper.setText(message, true);
+			mailSender.send(mimeMessage);
+		} catch (Exception e) {
+			System.err.println("Notice: Password update email could not be sent: " + e.getMessage());
+		}
 	}
 
 	public Boolean sendMail(String url, String reciepentEmail) throws UnsupportedEncodingException, MessagingException {
+		try {
+			MimeMessage message = mailSender.createMimeMessage();
+			MimeMessageHelper helper = new MimeMessageHelper(message);
 
-		MimeMessage message = mailSender.createMimeMessage();
-		MimeMessageHelper helper = new MimeMessageHelper(message);
+			helper.setFrom("yourmail@gmail.com", "Ecommerce Site");
+			helper.setTo(reciepentEmail);
 
-		helper.setFrom("yourmail@gmail.com", "Ecommerce Site");
-		helper.setTo(reciepentEmail);
-
-		String content = "<p>Hello,</p>" + "<p>You have requested to reset your password.</p>"
-				+ "<p>Click the link below to change your password:</p>" + "<p><a href=\"" + url
-				+ "\">Change my password</a></p>";
-		helper.setSubject("Password Reset");
-		helper.setText(content, true);
-		mailSender.send(message);
-		return true;
+			String content = "<p>Hello,</p>" + "<p>You have requested to reset your password.</p>"
+					+ "<p>Click the link below to change your password:</p>" + "<p><a href=\"" + url
+					+ "\">Change my password</a></p>";
+			helper.setSubject("Password Reset");
+			helper.setText(content, true);
+			mailSender.send(message);
+			return true;
+		} catch (Exception e) {
+			System.err.println("Notice: Reset email could not be sent: " + e.getMessage());
+			return false;
+		}
 	}
 
 	public static String generateUrl(HttpServletRequest request) {
@@ -93,30 +104,34 @@ public class CommonUtil {
 	String msg = null;;
 
 	public Boolean sendMailForProductOrder(ProductOrder order, String status) throws Exception {
+		try {
+			msg = "<p>Hello [[name]],</p>" + "<p>Thank you order <b>[[orderStatus]]</b>.</p>"
+					+ "<p><b>Product Details:</b></p>" + "<p>Name : [[productName]]</p>" + "<p>Category : [[category]]</p>"
+					+ "<p>Quantity : [[quantity]]</p>" + "<p>Price : [[price]]</p>"
+					+ "<p>Payment Type : [[paymentType]]</p>";
 
-		msg = "<p>Hello [[name]],</p>" + "<p>Thank you order <b>[[orderStatus]]</b>.</p>"
-				+ "<p><b>Product Details:</b></p>" + "<p>Name : [[productName]]</p>" + "<p>Category : [[category]]</p>"
-				+ "<p>Quantity : [[quantity]]</p>" + "<p>Price : [[price]]</p>"
-				+ "<p>Payment Type : [[paymentType]]</p>";
+			MimeMessage message = mailSender.createMimeMessage();
+			MimeMessageHelper helper = new MimeMessageHelper(message);
 
-		MimeMessage message = mailSender.createMimeMessage();
-		MimeMessageHelper helper = new MimeMessageHelper(message);
+			helper.setFrom("yourmail@gmail.com", "Shooping Cart");
+			helper.setTo(order.getOrderAddress().getEmail());
 
-		helper.setFrom("yourmail@gmail.com", "Shooping Cart");
-		helper.setTo(order.getOrderAddress().getEmail());
+			msg = msg.replace("[[name]]", order.getOrderAddress().getFirstName());
+			msg = msg.replace("[[orderStatus]]", status);
+			msg = msg.replace("[[productName]]", order.getProduct().getTitle());
+			msg = msg.replace("[[category]]", order.getProduct().getCategory());
+			msg = msg.replace("[[quantity]]", order.getQuantity().toString());
+			msg = msg.replace("[[price]]", order.getPrice().toString());
+			msg = msg.replace("[[paymentType]]", order.getPaymentType());
 
-		msg = msg.replace("[[name]]", order.getOrderAddress().getFirstName());
-		msg = msg.replace("[[orderStatus]]", status);
-		msg = msg.replace("[[productName]]", order.getProduct().getTitle());
-		msg = msg.replace("[[category]]", order.getProduct().getCategory());
-		msg = msg.replace("[[quantity]]", order.getQuantity().toString());
-		msg = msg.replace("[[price]]", order.getPrice().toString());
-		msg = msg.replace("[[paymentType]]", order.getPaymentType());
-
-		helper.setSubject("Product Order Status");
-		helper.setText(msg, true);
-		mailSender.send(message);
-		return true;
+			helper.setSubject("Product Order Status");
+			helper.setText(msg, true);
+			mailSender.send(message);
+			return true;
+		} catch (Exception e) {
+			System.err.println("Notice: Order email could not be sent: " + e.getMessage());
+			return false;
+		}
 	}
 
 	public UserDtls getLoggedInUserDetails(Principal p) {
@@ -126,22 +141,15 @@ public class CommonUtil {
 		return userDtls;
 	}
 
-//image url from AWS
+// image url - returns local accessible static path
 	public String getImageUrl(MultipartFile file, Integer bucketType) {
-
-		String bucketName = null;
+		String imageName = (file != null && !file.isEmpty()) ? file.getOriginalFilename() : "default.jpg";
 		if (bucketType == 1) {
-			bucketName = categoryBucket;
+			return "/img/category_img/" + imageName;
 		} else if (bucketType == 2) {
-			bucketName = productBucket;
-		} else
-			bucketName = profileBucket;
-
-//https://ecommerce-category.s3.eu-west-2.amazonaws.com/IMG-20220909-WA0000.jpg
-		String imageName = file != null ? file.getOriginalFilename() : "default.jpg";
-
-		String imgUrl = "https://" + bucketName + ".s3.eu-west-2.amazonaws.com/" + imageName;
-
-		return imgUrl;
+			return "/img/product_img/" + imageName;
+		} else {
+			return "/img/profile_img/" + imageName;
+		}
 	}
 }

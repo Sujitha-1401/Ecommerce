@@ -71,15 +71,28 @@ public class UserController {
 	}
 
 	@GetMapping("/addCart")
-	public String addToCart(@RequestParam Integer pid, @RequestParam Integer uid, HttpSession session) {
+	public String addToCart(@RequestParam Integer pid, @RequestParam Integer uid,
+			@RequestParam(required = false, defaultValue = "") String redirect, HttpSession session) {
 		Cart saveCart = cartService.saveCart(pid, uid);
 
 		if (ObjectUtils.isEmpty(saveCart)) {
 			session.setAttribute("errorMsg", "Product add to cart failed");
 		} else {
-			session.setAttribute("succMsg", "Product added to cart");
+			session.setAttribute("succMsg", "Product added to cart!");
+		}
+
+		if ("products".equalsIgnoreCase(redirect)) {
+			return "redirect:/products";
+		} else if ("home".equalsIgnoreCase(redirect)) {
+			return "redirect:/";
 		}
 		return "redirect:/product/" + pid;
+	}
+
+	@GetMapping("/buyNow")
+	public String buyNow(@RequestParam Integer pid, @RequestParam Integer uid, HttpSession session) {
+		cartService.saveCart(pid, uid);
+		return "redirect:/user/orders";
 	}
 
 	@GetMapping("/cart")
@@ -112,6 +125,7 @@ public class UserController {
 		UserDtls user = getLoggedInUserDetails(p);
 		List<Cart> carts = cartService.getCartsByUser(user.getId());
 		m.addAttribute("carts", carts);
+		m.addAttribute("user", user);
 		if (carts.size() > 0) {
 			Double orderPrice = carts.get(carts.size() - 1).getTotalOrderPrice();
 			Double totalOrderPrice = carts.get(carts.size() - 1).getTotalOrderPrice() + 250 + 100;

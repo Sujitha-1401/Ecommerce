@@ -2,78 +2,166 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
 	th:replace="~{base::layout(~{::section})}">
 <head>
-<meta charset="ISO-8859-1">
-<title>Insert title here</title>
+<meta charset="UTF-8">
+<title>Shopping Cart - Ecom Store</title>
 </head>
 <body>
 	<section>
-		<div class="container-fluid mt-5 p-5">
-
-			<div class="card card-sh">
-				<div class="card-header text-center">
-					<p class="fs-4">Cart Page</p>
-					<th:block th:if="${session.succMsg}">
-						<p class="text-success fw-bold">[[${session.succMsg}]]</p>
-						<th:block th:text="${@commnServiceImpl.removeSessionMessage()}"></th:block>
-					</th:block>
-
-					<th:block th:if="${session.errorMsg}">
-						<p class="text-danger fw-bold">[[${session.errorMsg}]]</p>
-						<th:block th:text="${@commnServiceImpl.removeSessionMessage()}"></th:block>
-					</th:block>
+		<div class="container my-5">
+			<!-- Header -->
+			<div class="d-flex justify-content-between align-items-center mb-4">
+				<div>
+					<h2 class="fw-bold mb-1">
+						<i class="fa-solid fa-cart-shopping text-primary me-2"></i> Your Shopping Cart
+					</h2>
+					<p class="text-muted small mb-0">Review items before proceeding to checkout</p>
 				</div>
-				<div class="card-body">
-					<table class="table">
-						<thead>
-							<tr>
-								<th scope="col">Sl No</th>
-								<th scope="col">Image</th>
-								<th scope="col">Product Name</th>
-								<th scope="col">Price</th>
-								<th scope="col" class="text-center">Quantity</th>
-								<th scope="col">Total Price</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr th:each="cart,c:${carts}">
-								<th scope="row">[[${c.count}]]</th>
-								<td><img
-									th:src="${cart.product.image}"
-									width="70px" height="70px"></td>
-								<td>[[${cart.product.title}]]</td>
-								<td>[[${cart.product.discountPrice}]]</td>
-								<td class="text-center"><a
-									th:href="@{'/user/cartQuantityUpdate?sy=de&cid='+${cart.id}}">
-										<i class="fa-solid fa-minus"></i>
-								</a> [ [[${cart.quantity}]] ] <a
-									th:href="@{'/user/cartQuantityUpdate?sy=in&cid='+${cart.id}}">
-										<i class="fa-solid fa-plus"></i>
-								</a></td>
-								<td>[[${cart.totalPrice}]]</td>
-							</tr>
-							<tr>
-								<td colspan="4"></td>
-								<td class="fw-bold">Total Price</td>
-								<td class="fw-bold">&#8377; [[${totalOrderPrice}]]</td>
-							</tr>
-
-						</tbody>
-					</table>
-					
-					<th:block th:unless="${carts.size==0}">
-					<div class="text-center">
-						<a href="/user/orders" class="btn btn-warning"> Proceed Payment</a>
-					</div>
-					</th:block>
-					<th:block th:if="${carts.size==0}">
-					<div class="text-center">
-						<a href="/products" class="btn btn-warning"> Add Products</a>
-					</div>
-					</th:block>
-				</div>
+				<a href="/products" class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-bold">
+					<i class="fa-solid fa-arrow-left me-1"></i> Continue Shopping
+				</a>
 			</div>
-		</div>
 
+			<!-- Notification Messages -->
+			<th:block th:if="${session.succMsg}">
+				<div class="alert alert-success alert-dismissible fade show custom-alert text-center" role="alert">
+					<i class="fa-solid fa-circle-check me-2"></i> [[${session.succMsg}]]
+					<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+				</div>
+				<th:block th:text="${@commnServiceImpl.removeSessionMessage()}"></th:block>
+			</th:block>
+
+			<th:block th:if="${session.errorMsg}">
+				<div class="alert alert-danger alert-dismissible fade show custom-alert text-center" role="alert">
+					<i class="fa-solid fa-circle-exclamation me-2"></i> [[${session.errorMsg}]]
+					<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+				</div>
+				<th:block th:text="${@commnServiceImpl.removeSessionMessage()}"></th:block>
+			</th:block>
+
+			<!-- Cart Content -->
+			<th:block th:if="${carts != null and carts.size > 0}">
+				<div class="row g-4">
+					<!-- Cart Items List -->
+					<div class="col-lg-8">
+						<div class="cart-card">
+							<div class="table-responsive">
+								<table class="table cart-table align-middle mb-0">
+									<thead>
+										<tr>
+											<th>Product</th>
+											<th>Price</th>
+											<th class="text-center">Quantity</th>
+											<th>Subtotal</th>
+											<th class="text-center">Action</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:each="cart, c:${carts}">
+											<td>
+												<div class="d-flex align-items-center gap-3">
+													<div class="rounded-3 p-1 border bg-light d-flex align-items-center justify-content-center"
+														style="width: 75px; height: 75px; min-width: 75px;">
+														<img th:src="@{${cart.product.image != null and cart.product.image.startsWith('/') ? cart.product.image : (cart.product.image != null and (cart.product.image.startsWith('http://') or cart.product.image.startsWith('https://')) ? cart.product.image : '/img/product_img/' + (cart.product.image != null ? cart.product.image : 'default.jpg'))}}"
+															th:alt="${cart.product.title}"
+															style="max-width: 100%; max-height: 100%; object-fit: contain;"
+															onerror="this.onerror=null;this.src='/img/default.jpg';">
+													</div>
+													<div>
+														<a th:href="@{'/product/'+${cart.product.id}}"
+															class="fw-bold text-dark text-decoration-none d-block mb-1"
+															style="max-width: 250px; font-size: 0.95rem;">
+															[[${cart.product.title}]]
+														</a>
+														<span class="badge bg-light text-secondary border">[[${cart.product.category}]]</span>
+													</div>
+												</div>
+											</td>
+											<td class="fw-bold text-secondary">
+												&#8377;[[${#numbers.formatDecimal(cart.product.discountPrice, 0, 'COMMA', 2, 'POINT')}]]
+											</td>
+											<td class="text-center">
+												<div class="qty-stepper">
+													<a th:href="@{'/user/cartQuantityUpdate?sy=de&cid='+${cart.id}}"
+														class="qty-btn" title="Decrease">
+														<i class="fa-solid fa-minus"></i>
+													</a>
+													<span class="qty-value">[[${cart.quantity}]]</span>
+													<a th:href="@{'/user/cartQuantityUpdate?sy=in&cid='+${cart.id}}"
+														class="qty-btn" title="Increase">
+														<i class="fa-solid fa-plus"></i>
+													</a>
+												</div>
+											</td>
+											<td class="fw-bold text-dark fs-6">
+												&#8377;[[${#numbers.formatDecimal(cart.totalPrice, 0, 'COMMA', 2, 'POINT')}]]
+											</td>
+											<td class="text-center">
+												<a th:href="@{'/user/cartQuantityUpdate?sy=rem&cid='+${cart.id}}"
+													class="btn btn-sm btn-outline-danger rounded-circle p-2"
+													title="Remove item">
+													<i class="fa-solid fa-trash-can"></i>
+												</a>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+
+					<!-- Order Summary Box -->
+					<div class="col-lg-4">
+						<div class="summary-card">
+							<h4>Order Summary</h4>
+							<div class="summary-row">
+								<span>Items Total</span>
+								<span>&#8377;[[${#numbers.formatDecimal(totalOrderPrice, 0, 'COMMA', 2, 'POINT')}]]</span>
+							</div>
+							<div class="summary-row">
+								<span>Delivery / Shipping</span>
+								<span class="text-success fw-bold">FREE</span>
+							</div>
+							<div class="summary-row">
+								<span>Estimated Taxes</span>
+								<span>&#8377;0.00</span>
+							</div>
+							<div class="summary-total">
+								<span>Grand Total</span>
+								<span class="text-primary">&#8377;[[${#numbers.formatDecimal(totalOrderPrice, 0, 'COMMA', 2, 'POINT')}]]</span>
+							</div>
+
+							<div class="mt-4">
+								<a href="/user/orders" class="btn btn-modern-buy w-100 py-3 fs-6">
+									<i class="fa-solid fa-credit-card me-2"></i> Proceed to Checkout
+								</a>
+							</div>
+
+							<div class="mt-4 pt-3 border-top text-center text-muted small">
+								<i class="fa-solid fa-shield-halved text-success me-1"></i> Safe & Secure 256-Bit SSL Encrypted Checkout
+							</div>
+						</div>
+					</div>
+				</div>
+			</th:block>
+
+			<!-- Empty Cart State -->
+			<th:block th:unless="${carts != null and carts.size > 0}">
+				<div class="cart-card p-5 text-center my-4">
+					<div class="mb-4">
+						<i class="fa-solid fa-cart-arrow-down fa-5x text-muted opacity-50"></i>
+					</div>
+					<h3 class="fw-bold">Your Cart is Empty</h3>
+					<p class="text-muted mx-auto" style="max-width: 400px;">
+						Looks like you haven't added anything to your cart yet. Explore our latest arrivals and unbeatable deals!
+					</p>
+					<div class="mt-4">
+						<a href="/products" class="btn btn-modern-primary px-4 py-2 fs-6">
+							<i class="fa-solid fa-bag-shopping me-2"></i> Start Shopping
+						</a>
+					</div>
+				</div>
+			</th:block>
+		</div>
 	</section>
 </body>
 </html>

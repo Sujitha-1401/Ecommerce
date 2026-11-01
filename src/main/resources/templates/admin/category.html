@@ -80,8 +80,9 @@
 										<td>[[${cat.name}]]</td>
 										<td>[[${cat.isActive}]]</td>
 										<td><img
-											th:src="${cat.imageName}"
-											width="50px" height="50px"></td>
+											th:src="@{${cat.imageName != null and cat.imageName.startsWith('/') ? cat.imageName : (cat.imageName != null and (cat.imageName.startsWith('http://') or cat.imageName.startsWith('https://')) ? cat.imageName : '/img/category_img/' + (cat.imageName != null ? cat.imageName : 'default.jpg'))}}"
+											onerror="this.onerror=null;this.src='/img/default.jpg';"
+											width="50px" height="50px" style="object-fit: contain;"></td>
 										<td><a th:href="@{'/admin/loadEditCategory/'+${cat.id}}"
 											class="btn btn-primary btn-sm"><i
 												class="fa-solid fa-pen-to-square  fa-1x"></i> Edit </a> <a
