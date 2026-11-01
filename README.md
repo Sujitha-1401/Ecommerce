@@ -2,7 +2,7 @@
 
 A full-stack e-commerce web application built with **Spring Boot**, where customers can browse products, manage a shopping cart and place orders, while admins manage the product catalog.
 
-> Developed by **M.S.R. Yaswanth**
+> Developed by **Putha Sujitha**
 
 ## ✨ Features
 
@@ -166,7 +166,7 @@ http://localhost:8080
 
 ## 👨‍💻 Authors
 
-- **M.S.R. Yaswanth** – [GitHub](https://github.com/yashmiriyala1914)
+- **Putha Sujitha** – [GitHub](https://github.com/Sujitha-1401)
 
 ---
 
