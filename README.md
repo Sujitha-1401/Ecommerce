@@ -108,8 +108,8 @@ src/main/resources
 
 **1. Clone the repository**
 ```bash
-git clone https://github.com/yashmiriyala1914/E-Commerce.git
-cd E-Commerce
+git clone https://github.com/Sujitha-1401/Ecommerce.git
+cd Ecommerce
 ```
 
 **2. Create the database**
